@@ -2,16 +2,11 @@ import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import QuestionCard from "../components/QuestionCard";
-import { recommendTravel } from "../services/api";
+import { getAllDestinations } from "../services/api";
+import { generatePersonalizedRecommendations } from "../utils/personalization";
 import LoadingScreen from "./LoadingScreen";
 
 void motion;
-
-const DURATIONS = [
-  { value: "short", label: "1–3 days" },
-  { value: "medium", label: "4–7 days" },
-  { value: "long", label: "7+ days" },
-];
 
 export default function Questionnaire() {
   const navigate = useNavigate();
@@ -19,18 +14,35 @@ export default function Questionnaire() {
   const questions = useMemo(
     () => [
       {
-        key: "destination_type",
-        prompt: "What type of destination do you prefer?",
+        key: "visitedPlaces",
+        prompt: "What places have you already visited?",
+        type: "text",
+        placeholder: "e.g. Goa, Manali, Jaipur",
+      },
+      {
+        key: "bestTripWhy",
+        prompt: "Which trip did you enjoy the most and why?",
+        type: "textarea",
+        placeholder: "Share what made it memorable...",
+      },
+      {
+        key: "placeTypes",
+        prompt: "What type of places do you like?",
+        type: "multi",
         options: [
-          { value: "mountains", label: "Mountains", icon: "🏔️" },
           { value: "beaches", label: "Beaches", icon: "🏖️" },
-          { value: "city", label: "City", icon: "🌆" },
+          { value: "mountains", label: "Mountains", icon: "🏔️" },
+          { value: "historical", label: "Historical", icon: "🏛️" },
+          { value: "adventure", label: "Adventure", icon: "🎒" },
+          { value: "luxury", label: "Luxury", icon: "✨" },
           { value: "nature", label: "Nature", icon: "🌳" },
+          { value: "nightlife", label: "Nightlife", icon: "🌃" },
         ],
       },
       {
         key: "budget",
-        prompt: "What is your budget?",
+        prompt: "What is your usual travel budget?",
+        type: "single",
         options: [
           { value: "low", label: "Low", icon: "💰" },
           { value: "medium", label: "Medium", icon: "💰💰" },
@@ -38,52 +50,64 @@ export default function Questionnaire() {
         ],
       },
       {
-        key: "experience",
-        prompt: "What kind of experience are you looking for?",
+        key: "duration",
+        prompt: "Preferred travel duration",
+        type: "single",
         options: [
-          { value: "adventure", label: "Adventure", icon: "🎒" },
-          { value: "relaxation", label: "Relaxation", icon: "😌" },
-          { value: "cultural", label: "Cultural", icon: "🏛️" },
-          { value: "shopping", label: "Shopping", icon: "🛍️" },
+          { value: "weekend", label: "Weekend", icon: "🧳" },
+          { value: "3-5days", label: "3–5 days", icon: "📅" },
+          { value: "1week", label: "1 week", icon: "🗓️" },
+          { value: "2plusweeks", label: "2+ weeks", icon: "🌍" },
         ],
       },
       {
-        key: "climate",
-        prompt: "Preferred climate?",
+        key: "travelWith",
+        prompt: "Who do you usually travel with?",
+        type: "single",
+        options: [
+          { value: "solo", label: "Solo", icon: "🧍" },
+          { value: "friends", label: "Friends", icon: "🧑‍🤝‍🧑" },
+          { value: "family", label: "Family", icon: "👨‍👩‍👧‍👦" },
+          { value: "partner", label: "Partner", icon: "💑" },
+        ],
+      },
+      {
+        key: "activities",
+        prompt: "Preferred activities",
+        type: "multi",
+        options: [
+          { value: "trekking", label: "Trekking", icon: "🥾" },
+          { value: "shopping", label: "Shopping", icon: "🛍️" },
+          { value: "food exploration", label: "Food exploration", icon: "🍜" },
+          { value: "photography", label: "Photography", icon: "📸" },
+          { value: "relaxation", label: "Relaxation", icon: "😌" },
+          { value: "water sports", label: "Water sports", icon: "🏄" },
+        ],
+      },
+      {
+        key: "weather",
+        prompt: "Preferred weather",
+        type: "single",
         options: [
           { value: "cold", label: "Cold", icon: "❄️" },
           { value: "moderate", label: "Moderate", icon: "🌤️" },
-          { value: "hot", label: "Hot", icon: "☀️" },
+          { value: "warm", label: "Warm", icon: "☀️" },
         ],
       },
       {
-        key: "duration",
-        prompt: "Trip duration?",
-        options: DURATIONS.map((d) => ({
-          value: d.value,
-          label: d.label,
-          icon: "🗓️",
-        })),
-      },
-      {
-        key: "group",
-        prompt: "Who are you traveling with?",
+        key: "regionType",
+        prompt: "Domestic or international?",
+        type: "single",
         options: [
-          { value: "solo", label: "Solo", icon: "🧑‍🎤" },
-          { value: "friends", label: "Friends", icon: "🧑‍🤝‍🧑" },
-          { value: "family", label: "Family", icon: "👨‍👩‍👧‍👦" },
-          { value: "couple", label: "Couple", icon: "💑" },
+          { value: "domestic", label: "Domestic", icon: "🇮🇳" },
+          { value: "international", label: "International", icon: "🌎" },
         ],
       },
       {
-        key: "activity",
-        prompt: "Preferred activity?",
-        options: [
-          { value: "trekking", label: "Trekking", icon: "🥾" },
-          { value: "swimming", label: "Swimming", icon: "🏊" },
-          { value: "sightseeing", label: "Sightseeing", icon: "📸" },
-          { value: "nightlife", label: "Nightlife", icon: "🌃" },
-        ],
+        key: "dreamDestination",
+        prompt: "Any dream destination?",
+        type: "text",
+        placeholder: "e.g. Bali, Switzerland, Ladakh",
       },
     ],
     []
@@ -92,13 +116,16 @@ export default function Questionnaire() {
   const total = questions.length;
   const [stepIndex, setStepIndex] = useState(0);
   const [answers, setAnswers] = useState({
-    destination_type: "",
+    visitedPlaces: "",
+    bestTripWhy: "",
+    placeTypes: [],
     budget: "",
-    experience: "",
-    climate: "",
     duration: "",
-    group: "",
-    activity: "",
+    travelWith: "",
+    activities: [],
+    weather: "",
+    regionType: "",
+    dreamDestination: "",
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -123,24 +150,15 @@ export default function Questionnaire() {
     if (stepIndex > 0) setStepIndex((i) => i - 1);
   };
 
-  const buildPayload = () => ({
-    destination_type: answers.destination_type,
-    budget: answers.budget,
-    experience: answers.experience,
-    climate: answers.climate,
-    duration: answers.duration,
-    group: answers.group,
-    activity: answers.activity,
-  });
-
   const handleSubmit = async () => {
     setError("");
-    if (!selectedValue) return;
 
     // Basic completeness check
     const requiredKeys = questions.map((q) => q.key);
     for (const k of requiredKeys) {
-      if (!answers[k]) {
+      const val = answers[k];
+      const empty = Array.isArray(val) ? val.length === 0 : !String(val || "").trim();
+      if (empty) {
         setError("Please answer all questions.");
         return;
       }
@@ -148,18 +166,27 @@ export default function Questionnaire() {
 
     setBusy(true);
     try {
-      const payload = buildPayload();
-      const results = await recommendTravel(payload);
-      navigate("/results", { state: { results, payload } });
+      const allDestinations = await getAllDestinations();
+      const recommendations = generatePersonalizedRecommendations(
+        allDestinations,
+        answers,
+        5
+      );
+      navigate("/results", {
+        state: {
+          results: recommendations,
+          personalizationAnswers: answers,
+        },
+      });
     } catch {
-      setError("Could not fetch recommendations. Is the backend running?");
+      setError("Could not generate recommendations from dataset.");
     } finally {
       setBusy(false);
     }
   };
 
   if (busy) {
-    return <LoadingScreen />;
+    return <LoadingScreen message="Generating your travel personality matches..." />;
   }
 
   return (
@@ -197,6 +224,8 @@ export default function Questionnaire() {
               options={current.options}
               value={selectedValue}
               onChange={(v) => setAnswer(current.key, v)}
+              type={current.type || "single"}
+              placeholder={current.placeholder}
             />
           </motion.div>
         </AnimatePresence>
@@ -230,10 +259,10 @@ export default function Questionnaire() {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={!answers.activity}
+              disabled={false}
               className="rounded-2xl bg-gradient-to-r from-fuchsia-500 to-cyan-400 px-6 py-2.5 text-sm font-semibold text-black shadow-[0_20px_80px_-40px_rgba(192,132,252,0.9)] transition disabled:opacity-50"
             >
-              Get My Recommendations
+              Generate My Personalized Top 5
             </button>
           )}
         </div>

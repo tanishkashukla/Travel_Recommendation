@@ -5,6 +5,7 @@ import { recommendTravel } from "../services/api";
 import { AuthContext } from "../context/AuthContext";
 import LoadingScreen from "./LoadingScreen";
 import { getFavoriteIds, setFavoriteIds } from "../utils/favorites";
+import RecommendationCard from "../components/RecommendationCard";
 
 export default function Results() {
   const { user } = useContext(AuthContext);
@@ -13,6 +14,7 @@ export default function Results() {
 
   const initialResults = location.state?.results || null;
   const initialPayload = location.state?.payload || null;
+  const isPersonalized = Boolean(location.state?.personalizationAnswers);
 
   const [results, setResults] = useState(initialResults || []);
   const [loading, setLoading] = useState(!initialResults);
@@ -22,6 +24,10 @@ export default function Results() {
   const favoriteSet = useMemo(() => new Set(favorites || []), [favorites]);
 
   useEffect(() => {
+    if (isPersonalized) {
+      setLoading(false);
+      return;
+    }
     if (initialResults) return;
     if (!initialPayload) {
       setError("Missing recommendation payload. Please start the quiz again.");
@@ -47,7 +53,7 @@ export default function Results() {
     return () => {
       cancelled = true;
     };
-  }, [initialPayload, initialResults, user?.id]);
+  }, [initialPayload, initialResults, user?.id, isPersonalized]);
 
   const persistFavorites = (next) => {
     setFavorites(next);
@@ -77,10 +83,12 @@ export default function Results() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="text-sm font-semibold text-white/70">
-              Your recommendations
+              {isPersonalized ? "Your personalized top 5" : "Your recommendations"}
             </div>
             <h1 className="mt-1 text-3xl font-semibold tracking-tight sm:text-4xl">
-              Destinations picked for your vibe
+              {isPersonalized
+                ? "Destinations matching your travel personality"
+                : "Destinations picked for your vibe"}
             </h1>
           </div>
           <button
@@ -100,15 +108,23 @@ export default function Results() {
 
         {results?.length ? (
           <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {results.map((d) => (
-              <DestinationCard
-                key={d.id ?? d.name}
-                destination={d}
-                isFavorite={favoriteSet.has(d.id)}
-                onToggleFavorite={toggleFavorite}
-                onViewDetails={(id) => navigate(`/destination/${id}`)}
-              />
-            ))}
+            {results.map((d) =>
+              isPersonalized ? (
+                <RecommendationCard
+                  key={d.id ?? d.name}
+                  item={d}
+                  onViewDetails={(id) => navigate(`/destination/${id}`)}
+                />
+              ) : (
+                <DestinationCard
+                  key={d.id ?? d.name}
+                  destination={d}
+                  isFavorite={favoriteSet.has(d.id)}
+                  onToggleFavorite={toggleFavorite}
+                  onViewDetails={(id) => navigate(`/destination/${id}`)}
+                />
+              )
+            )}
           </div>
         ) : (
           <div className="mt-10 rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/70">
