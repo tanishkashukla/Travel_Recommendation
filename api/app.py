@@ -455,7 +455,7 @@ def recommend():
     return resp
 
 
-@app.options("/recommend")
+@app.route("/recommend", methods=["OPTIONS"])
 def recommend_options():
     # Enables CORS preflight for browsers.
     return ("", 204)
