@@ -1,0 +1,21 @@
+item_id,hybrid_score,similarity_score,cf_score,popular_destination,city,state,latitude,longitude,synthetic_review
+957,0.7900391270324922,0.2984800606946354,0.5938369514784402,Dr. Salim Ali Bird Santuary,Goa,Goa,15.513,73.8704,Dr. Salim Ali Bird Santuary is an average wildlife destination that could benefit from better facilities.
+1018,0.6,0.31578853498712284,0.0,Sunset Point,Mount Abu,Rajasthan,24.5945112,72.7062297,Sunset Point is an average wildlife destination that could benefit from better facilities.
+1012,0.5759600296855019,0.30313595664254067,0.0,Burirdabri Forest camp,Sundarbans,West Bengal,22.077495,89.0293676,Burirdabri Forest camp is an average urban destination that could benefit from better facilities.
+1010,0.572902648648259,0.30152681351146016,0.0,Chacha Nehru Gyan Pushp museum,Aligarh,Uttar Pradesh,27.9112617,78.0673061,Chacha Nehru Gyan Pushp museum is an average urban destination that could benefit from better facilities.
+1001,0.5694931083544102,0.29973232395417004,0.0,Kingdom of Dreams,Gurugram,Haryana,28.4678664,77.0688866,Kingdom of Dreams is an average urban destination that could benefit from better facilities.
+979,0.5691039049795589,0.2995274806815761,0.0,Kufri Fun World,Shimla,Himachal Pradesh,31.0941261,77.278049,Kufri Fun World is an average urban destination that could benefit from better facilities.
+940,0.5432984062484851,0.2859456796167464,0.0,Kaliadeh Palace,Ujjain,Madhya Pradesh,23.2490716,75.7779662,Kaliadeh Palace is a popular urban place offering a pleasant and enjoyable visit.
+939,0.5432981556583176,0.2859455477275766,0.0,Diu museum,Diu,Daman and Diu,20.7155688,70.9891437,Diu museum is a popular urban place offering a pleasant and enjoyable visit.
+941,0.5429238088245784,0.28574852366390396,0.0,Adlabs Imagica,Lonavala,Maharastra,18.7679396,73.2823206,Adlabs Imagica is a popular urban place offering a pleasant and enjoyable visit.
+202,0.5403396814997108,0.2843884606936704,0.0,Jampore beach,Diu,Daman and Diu,20.375971,72.825722,Jampore beach is a highly recommended beach destination with an excellent overall experience.
+526,0.521367153860077,0.27440294951313265,0.0,Changthang Wildlife Sanctuary,Leh,Ladakh,34.1525864,77.5770535,Changthang Wildlife Sanctuary is a popular wildlife place offering a pleasant and enjoyable visit.
+330,0.5199659291531966,0.2736654650175101,0.0,Dubare Elephant camp and bathing spot,Coorg,Karnataka,12.1726489,75.6440842,Dubare Elephant camp and bathing spot is a popular wildlife place offering a pleasant and enjoyable visit.
+185,0.4,0.0,1.0655351947372478,,,,,,
+497,0.346899211817228,0.0,0.9240832980446694,,,,,,
+2,0.3217794705261135,0.0,0.857168376973727,,,,,,
+501,0.3115701905317597,0.0,0.8299725091064499,,,,,,
+807,0.29490933125392016,0.0,0.7855906792686933,,,,,,
+558,0.2920794114014088,0.0,0.7780522312658521,,,,,,
+296,0.2914089623954228,0.0,0.7762662637354654,,,,,,
+5,0.2858018535050793,0.0,0.7613298340770026,,,,,,

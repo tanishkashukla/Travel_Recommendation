@@ -1,0 +1,11 @@
+item_id,popular_destination,city,state,latitude,longitude,synthetic_review,similarity_score
+621,Chapora Fort,Goa,Goa,15.5733497,73.7409781,Chapora Fort is a popular urban place offering a pleasant and enjoyable visit.,0.985545243113131
+695,Fontainhas colony,Panjim,Goa,15.5179749,73.7626122,Fontainhas colony is a popular urban place offering a pleasant and enjoyable visit.,0.9855350310389769
+697,Fort Aguada,Goa,Goa,15.5008238,73.9114061,Fort Aguada is a popular urban place offering a pleasant and enjoyable visit.,0.9855344975825977
+91,Rumi ka Mazaar,Ujjain,Madhya Pradesh,23.1793,75.784912,Rumi ka Mazaar is a highly recommended urban destination with an excellent overall experience.,0.8333408364017592
+156,Sitabinji Fresco painting and rock inscription,Keonjhar,Odisha,21.5024021,85.8221225,Sitabinji Fresco painting and rock inscription is a highly recommended urban destination with an excellent overall experience.,0.8330247200441676
+157,State museum Hotwar,Ranchi,Jharkhand,23.3835366,85.3854678,State museum Hotwar is a highly recommended urban destination with an excellent overall experience.,0.8330245045547753
+251,Pemayangtse Monastery,Pelling,Sikkim,27.303354,88.253716,Pemayangtse Monastery is a highly recommended urban destination with an excellent overall experience.,0.8326449939172678
+255,Jallianwala Bagh,Amritsar,Punjab,31.6199803,74.8764849,Jallianwala Bagh is a highly recommended urban destination with an excellent overall experience.,0.8326446716422146
+256,Kargil War Memorial,Kargil,Ladakh,34.4340036,75.8076814,Kargil War Memorial is a highly recommended urban destination with an excellent overall experience.,0.8326446569454444
+302,Mahabalipuram,Chennai,Tamil Nadu,12.6207821,80.2824026,Mahabalipuram is a highly recommended urban destination with an excellent overall experience.,0.8326381325729133

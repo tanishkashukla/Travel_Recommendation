@@ -1,0 +1,45 @@
+DATASET SUMMARY
+------------------------------------------------------------
+Rows (items): 1019
+Columns: 16
+
+Column dtypes:
+state                    object
+city                     object
+popular_destination      object
+latitude                float64
+longitude               float64
+interest                 object
+google_rating           float64
+price_fare                int64
+place_category           object
+estimated_visits          int64
+popularity_score        float64
+best_season_to_visit     object
+crowd_level              object
+synthetic_review         object
+sentiment_score         float64
+experience_score        float64
+
+Missing values (top):
+No missing values found.
+
+Top place categories:
+place_category
+Urban        530
+Wildlife     275
+Religious    213
+Beach          1
+
+Top states:
+state
+Uttar Pradesh     103
+Uttarakhand        97
+Tamil Nadu         87
+West Bengal        58
+Madhya Pradesh     46
+Karnataka          46
+Sikkim             42
+Maharashtra        41
+Kerala             41
+Odisha             40
