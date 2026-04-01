@@ -6,6 +6,8 @@ import Home from "./pages/Home";
 import Questionnaire from "./pages/Questionnaire";
 import Results from "./pages/Results";
 import Navbar from "./components/Navbar";
+import Profile from "./pages/Profile";
+import DestinationDetails from "./pages/DestinationDetails";
 
 function ProtectedLayout() {
   return (
@@ -49,6 +51,22 @@ export default function App() {
           element={
             <RequireAuth>
               <Results />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <RequireAuth>
+              <Profile />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/destination/:id"
+          element={
+            <RequireAuth>
+              <DestinationDetails />
             </RequireAuth>
           }
         />

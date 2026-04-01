@@ -4,16 +4,7 @@ import DestinationCard from "../components/DestinationCard";
 import { recommendTravel } from "../services/api";
 import { AuthContext } from "../context/AuthContext";
 import LoadingScreen from "./LoadingScreen";
-
-const FAVORITES_KEY = "travel_recommender_favorites";
-
-function safeParse(json) {
-  try {
-    return JSON.parse(json);
-  } catch {
-    return [];
-  }
-}
+import { getFavoriteIds, setFavoriteIds } from "../utils/favorites";
 
 export default function Results() {
   const { user } = useContext(AuthContext);
@@ -26,10 +17,7 @@ export default function Results() {
   const [results, setResults] = useState(initialResults || []);
   const [loading, setLoading] = useState(!initialResults);
   const [error, setError] = useState("");
-  const [favorites, setFavorites] = useState(() => {
-    if (!localStorage) return [];
-    return safeParse(localStorage.getItem(FAVORITES_KEY));
-  });
+  const [favorites, setFavorites] = useState(() => getFavoriteIds());
 
   const favoriteSet = useMemo(() => new Set(favorites || []), [favorites]);
 
@@ -63,7 +51,7 @@ export default function Results() {
 
   const persistFavorites = (next) => {
     setFavorites(next);
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
+    setFavoriteIds(next);
   };
 
   const toggleFavorite = (id) => {
@@ -118,6 +106,7 @@ export default function Results() {
                 destination={d}
                 isFavorite={favoriteSet.has(d.id)}
                 onToggleFavorite={toggleFavorite}
+                onViewDetails={(id) => navigate(`/destination/${id}`)}
               />
             ))}
           </div>

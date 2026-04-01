@@ -16,3 +16,11 @@ export function recommendTravel(payload) {
   return api.post("/recommend", payload).then((r) => r.data);
 }
 
+export function getAllDestinations() {
+  return api.get("/destinations").then((r) => r.data);
+}
+
+export function getDestinationById(id) {
+  return api.get(`/destination/${id}`).then((r) => r.data);
+}
+

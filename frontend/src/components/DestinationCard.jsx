@@ -17,6 +17,7 @@ export default function DestinationCard({
   destination,
   isFavorite,
   onToggleFavorite,
+  onViewDetails,
 }) {
   const budgetLabel = useMemo(() => {
     const b = (destination?.budget || "").toLowerCase();
@@ -35,7 +36,15 @@ export default function DestinationCard({
   }, [destination]);
 
   return (
-    <article className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:shadow-[0_25px_70px_-40px_rgba(255,255,255,0.25)]">
+    <article
+      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:shadow-[0_25px_70px_-40px_rgba(255,255,255,0.25)]"
+      onClick={() => onViewDetails?.(destination?.id)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") onViewDetails?.(destination?.id);
+      }}
+    >
       <div className="relative h-44 sm:h-48">
         <img
           src={imageUrl}
@@ -48,7 +57,10 @@ export default function DestinationCard({
 
         <button
           type="button"
-          onClick={() => onToggleFavorite?.(destination?.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite?.(destination?.id);
+          }}
           className="absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-black/30 text-white/90 backdrop-blur transition hover:bg-black/40"
           aria-label={isFavorite ? "Remove from favorites" : "Save to favorites"}
         >
@@ -84,6 +96,16 @@ export default function DestinationCard({
           <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
             Best time: {destination?.bestTimeToVisit || "—"}
           </span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewDetails?.(destination?.id);
+            }}
+            className="rounded-full border border-white/10 bg-white/5 px-3 py-1 hover:bg-white/10 transition"
+          >
+            View details
+          </button>
         </div>
       </div>
     </article>

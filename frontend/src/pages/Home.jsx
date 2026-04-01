@@ -1,10 +1,50 @@
-import { useContext } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import DestinationCard from "../components/DestinationCard";
+import { getAllDestinations } from "../services/api";
+import { getFavoriteIds, setFavoriteIds } from "../utils/favorites";
+import LoadingScreen from "./LoadingScreen";
 
 export default function Home() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [allDestinations, setAllDestinations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [favorites, setFavorites] = useState(() => getFavoriteIds());
+  const favoriteSet = useMemo(() => new Set(favorites), [favorites]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await getAllDestinations();
+        if (!cancelled) setAllDestinations(data);
+      } catch {
+        if (!cancelled) setError("Could not load destinations right now.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const toggleFavorite = (id) => {
+    if (!id) return;
+    let next = [];
+    if (favoriteSet.has(id)) {
+      next = favorites.filter((x) => x !== id);
+    } else {
+      next = [...favorites, id];
+    }
+    setFavorites(next);
+    setFavoriteIds(next);
+  };
+
+  if (loading) return <LoadingScreen message="Loading all destinations..." />;
 
   return (
     <main className="relative min-h-[100svh] bg-[#07070b] text-white">
@@ -74,6 +114,35 @@ export default function Home() {
               </div>
               <div className="mt-1 text-sm text-white/60">{c.desc}</div>
             </div>
+          ))}
+        </div>
+
+        <div className="mt-2 flex items-center justify-between w-full">
+          <h2 className="text-xl font-semibold">All destinations</h2>
+          <button
+            type="button"
+            onClick={() => navigate("/profile")}
+            className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10 transition"
+          >
+            View Profile
+          </button>
+        </div>
+
+        {error ? (
+          <div className="w-full rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            {error}
+          </div>
+        ) : null}
+
+        <div className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {allDestinations.map((d) => (
+            <DestinationCard
+              key={d.id}
+              destination={d}
+              isFavorite={favoriteSet.has(d.id)}
+              onToggleFavorite={toggleFavorite}
+              onViewDetails={(id) => navigate(`/destination/${id}`)}
+            />
           ))}
         </div>
       </div>

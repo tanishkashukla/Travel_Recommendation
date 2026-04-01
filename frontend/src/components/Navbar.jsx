@@ -54,6 +54,16 @@ export default function Navbar() {
           >
             Quiz
           </NavLink>
+          <NavLink
+            to="/profile"
+            className={({ isActive }) =>
+              `text-sm transition ${
+                isActive ? "text-white" : "text-white/70 hover:text-white"
+              }`
+            }
+          >
+            Profile
+          </NavLink>
         </nav>
 
         <div className="flex items-center gap-3">

@@ -351,6 +351,25 @@ def _map_group_to_people(group: str) -> int:
     return 2
 
 
+def _serialize_destination_row(r, budget_hint: str = ""):
+    name = r.get("popular_destination") or ""
+    return {
+        "id": r.get("item_id"),
+        "name": name,
+        "description": r.get("synthetic_review") or "",
+        "budget": budget_hint or "",
+        "rating": r.get("google_rating"),
+        "bestTimeToVisit": r.get("best_season_to_visit") or "",
+        "city": r.get("city") or "",
+        "state": r.get("state") or "",
+        "placeCategory": r.get("place_category") or "",
+        "interest": r.get("interest") or "",
+        "priceFare": r.get("price_fare"),
+        "crowdLevel": r.get("crowd_level") or "",
+        "image": r.get("image") or None,
+    }
+
+
 @app.post("/recommend")
 def recommend():
     """
@@ -438,18 +457,10 @@ def recommend():
     hybrid_records = hybrid.to_dict(orient="records")
     out = []
     for r in hybrid_records:
-        out.append(
-            {
-                "id": r.get("item_id"),
-                "name": r.get("popular_destination"),
-                "description": r.get("synthetic_review") or "",
-                "budget": budget or "",
-                "rating": r.get("google_rating"),
-                "bestTimeToVisit": r.get("best_season_to_visit") or season,
-                # Frontend will fall back to Unsplash when this is missing.
-                "image": r.get("image") or None,
-            }
-        )
+        row = _serialize_destination_row(r, budget_hint=budget or "")
+        if not row.get("bestTimeToVisit"):
+            row["bestTimeToVisit"] = season
+        out.append(row)
 
     resp = make_response(jsonify(out))
     return resp
@@ -459,3 +470,20 @@ def recommend():
 def recommend_options():
     # Enables CORS preflight for browsers.
     return ("", 204)
+
+
+@app.get("/destinations")
+def get_destinations():
+    # Return all destinations for browse/discovery pages.
+    records = places_df.to_dict(orient="records")
+    out = [_serialize_destination_row(r) for r in records]
+    return jsonify(out)
+
+
+@app.get("/destination/<int:item_id>")
+def get_destination(item_id: int):
+    match = places_df[places_df["item_id"] == item_id]
+    if match.empty:
+        return jsonify({"error": "Destination not found"}), 404
+    row = match.iloc[0].to_dict()
+    return jsonify(_serialize_destination_row(row))
