@@ -28,7 +28,7 @@ export default function Home() {
           setOffset(data.length ? PAGE_SIZE : 0);
           setEndReached(!data || data.length < PAGE_SIZE);
         }
-      } catch (e) {
+      } catch {
         if (!cancelled) setError("Could not load destinations right now.");
       } finally {
         if (!cancelled) setLoading(false);
