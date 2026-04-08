@@ -14,14 +14,21 @@ export default function Home() {
   const [error, setError] = useState("");
   const [favorites, setFavorites] = useState(() => getFavoriteIds());
   const favoriteSet = useMemo(() => new Set(favorites), [favorites]);
+  const [offset, setOffset] = useState(0);
+  const [endReached, setEndReached] = useState(false);
+  const PAGE_SIZE = 24;
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const data = await getAllDestinations();
-        if (!cancelled) setAllDestinations(data);
-      } catch {
+        const data = await getAllDestinations({ limit: PAGE_SIZE, offset: 0 });
+        if (!cancelled) {
+          setAllDestinations(data);
+          setOffset(data.length ? PAGE_SIZE : 0);
+          setEndReached(!data || data.length < PAGE_SIZE);
+        }
+      } catch (e) {
         if (!cancelled) setError("Could not load destinations right now.");
       } finally {
         if (!cancelled) setLoading(false);
@@ -145,6 +152,34 @@ export default function Home() {
             />
           ))}
         </div>
+
+        {!endReached ? (
+          <div className="mt-7 flex justify-center">
+            <button
+              type="button"
+              onClick={async () => {
+                setError("");
+                setLoading(true);
+                try {
+                  const data = await getAllDestinations({
+                    limit: PAGE_SIZE,
+                    offset,
+                  });
+                  setAllDestinations((prev) => [...prev, ...(data || [])]);
+                  setOffset((prev) => prev + (data?.length || 0));
+                  if (!data || data.length < PAGE_SIZE) setEndReached(true);
+                } catch {
+                  setError("Could not load more destinations.");
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              className="rounded-3xl border border-white/10 bg-white/5 px-6 py-3 text-sm text-white/80 hover:bg-white/10 transition"
+            >
+              Load more
+            </button>
+          </div>
+        ) : null}
       </div>
     </main>
   );

@@ -16,8 +16,12 @@ export function recommendTravel(payload) {
   return api.post("/recommend", payload).then((r) => r.data);
 }
 
-export function getAllDestinations() {
-  return api.get("/destinations").then((r) => r.data);
+export function getAllDestinations({ limit = 60, offset = 0 } = {}) {
+  return api
+    .get("/destinations", {
+      params: { limit, offset },
+    })
+    .then((r) => r.data);
 }
 
 export function getDestinationById(id) {

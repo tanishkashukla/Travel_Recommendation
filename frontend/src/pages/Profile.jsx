@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DestinationCard from "../components/DestinationCard";
-import { getAllDestinations } from "../services/api";
+import { getDestinationById } from "../services/api";
 import { getFavoriteIds, setFavoriteIds } from "../utils/favorites";
 import LoadingScreen from "./LoadingScreen";
 
@@ -16,9 +16,26 @@ export default function Profile() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      if (!favorites.length) {
+        if (!cancelled) {
+          setDestinations([]);
+          setLoading(false);
+        }
+        return;
+      }
+
       try {
-        const data = await getAllDestinations();
-        if (!cancelled) setDestinations(data);
+        setLoading(true);
+        setError("");
+
+        const results = await Promise.allSettled(
+          favorites.map((id) => getDestinationById(Number(id)))
+        );
+        const ok = results
+          .filter((r) => r.status === "fulfilled")
+          .map((r) => r.value);
+
+        if (!cancelled) setDestinations(ok);
       } catch {
         if (!cancelled) setError("Could not load profile data.");
       } finally {
@@ -28,7 +45,7 @@ export default function Profile() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [favorites]);
 
   const likedDestinations = useMemo(
     () => destinations.filter((d) => favoriteSet.has(d.id)),

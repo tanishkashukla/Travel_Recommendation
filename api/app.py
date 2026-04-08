@@ -475,7 +475,17 @@ def recommend_options():
 @app.get("/destinations")
 def get_destinations():
     # Return all destinations for browse/discovery pages.
-    records = places_df.to_dict(orient="records")
+    limit = request.args.get("limit", default=60, type=int)
+    offset = request.args.get("offset", default=0, type=int)
+    limit = max(1, min(limit, 2000))
+    offset = max(0, offset)
+
+    df = places_df
+    # Pandas row slicing is zero-based; use iloc for offset/limit.
+    if offset or limit:
+        df = df.iloc[offset : offset + limit]
+
+    records = df.to_dict(orient="records")
     out = [_serialize_destination_row(r) for r in records]
     return jsonify(out)
 
